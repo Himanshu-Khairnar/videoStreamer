@@ -1,0 +1,16 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "backend of video streamer",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "js",
+    "react",
+    "express"
+  ],
+  "author": "Himanshu Khairnar",
+  "license": "ISC"
+}
