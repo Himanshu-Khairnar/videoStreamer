@@ -21,7 +21,6 @@ const generateAccessAndRefreshToken = async (userId) => {
 
 const registerUser = asyncHandler(async (req, res) => {
     const { fullName, userName, email, password } = req.body;
-    console.log("Email:", email)
 
 
     if ([fullName, userName, email, password].some((field) => field === '')) {
@@ -36,13 +35,11 @@ const registerUser = asyncHandler(async (req, res) => {
     if (exisitingUser)
         throw new ApiError(409, "Already user exists")
 
-    console.log("h")
     const avatarLocalPath = req.files?.avatar[0]?.path
 
     let coverImageLocalPath;
     if (req.files && Array.isArray(req.files.coverImage) && req.files.coverImage.length > 0) {
         coverImageLocalPath = req.files?.coverImage[0]?.path
-        console.log(avatarLocalPath) || ""
     }
 
 
@@ -53,7 +50,6 @@ const registerUser = asyncHandler(async (req, res) => {
     let coverImage = uploadOnCloudinary(coverImageLocalPath)
 
 
-    console.log(avatar)
     if (!avatar.url)
         throw new ApiError(400, "Avatar is required ")
 
@@ -85,20 +81,21 @@ const loginUser = asyncHandler(async (req, res) => {
     //access token and refresh token
     //send cookie
 
-    const { email, userName, password } = req.body;
+    const { email, userName, password } = req.body
 
-    if (!userName || !email) {
+    if (!userName && !email) {
         throw new ApiError(400, "Email and UserName fields are required")
     }
 
-    const user = User.findOne({
+    const user =  await User.findOne({
         $or: [{ userName }, { email }]
     })
     if (!user) {
         throw new ApiError(404, "User does not exist")
     }
 
-    const isPasswordValid = await user.isPasswordCorrect(password)
+
+        const isPasswordValid = await user.isPasswordCorrect(password)
     if (!isPasswordValid)
         throw new ApiError(400, "Password is not correct")
 
