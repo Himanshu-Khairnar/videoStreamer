@@ -279,4 +279,68 @@ const updateUserCoverImage = asyncHandler(async (req, res) => {
     return res.status(200).json(new ApiResponse(200, updatedCoverImage, "Cover Image Updated Successfully"))
 })
 
-export { registerUser, loginUser, logoutUser, refreshAccessToken, changecurrentPassword, getCurrentUser, updateAccountDetails, updateUserCoverImage, updateUserAvatar }
+const getUserChannelProfile = asyncHandler(async (req, res) => {
+    const { userName } = req.params
+
+    if (!userName.trim())
+        throw new ApiError(400, "User name not found")
+
+    const channel = await User.aggregate([
+        {
+
+            $match: {
+                userName: userName?.toLowerCase()
+            },
+        },
+        {
+            $lookup: {
+                from: "subscriptions",
+                localField: "_id",
+                foreignField: "channel",
+                as: "subscribers"
+            },
+        },
+        {
+            $lookup: {
+                from: "subscriptions",
+                localField: "_id",
+                foreignField: "subscriber",
+                as: "subscriptions"
+            }
+        },
+        {
+            $addFields: {
+                subscribersCount: { $size: "$subscribers" },
+                subscriptionsCount: { $size: "$subscriptions" },
+                isSubscribed: {
+                    $cond:{
+                        if:{$in:[req.user?._id, "$subscribers"]},
+                        then:true,
+                        else:false
+                    }
+                }
+            }
+        },
+        {
+            $project: {
+                fullName:1,
+                userName:1,
+                subscribersCount:1,
+                subscriptionsCount:1,
+                isSubscribed:1,
+                avatar:1,
+                coverImage:1,
+                email:1
+            }
+        }
+        
+    ])
+    if(!channel?.length)
+        throw new ApiError(404, "Channel not found")
+    
+    return res.
+    status(200).
+    json(new ApiResponse(200,channel[0],"User Channel"))
+})
+
+export { registerUser, loginUser, logoutUser, refreshAccessToken, changecurrentPassword, getCurrentUser, updateAccountDetails, updateUserCoverImage, updateUserAvatar, getUserChannelProfile }
