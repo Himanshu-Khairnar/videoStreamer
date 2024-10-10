@@ -1,6 +1,6 @@
 import { v2 as cloudinary } from "cloudinary"
 import fs from "fs"
-import { ApiError } from "./ApiErrors";
+import { ApiError } from "./ApiErrors.js";
 
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -32,7 +32,7 @@ const getPublicIdFromUrl = (url) => {
     return publicId;
 };
 
-export const OldImagetoDelete = async (url) => {
+const OldImagetoDelete = async (url) => {
     const publicId = getPublicIdFromUrl(url);
 
     try {
