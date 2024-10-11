@@ -13,7 +13,7 @@ const getAllVideos = asyncHandler(async (req, res) => {
         const pipeline = [
             {
                 $match: {
-                    
+
                     $or: [
                         { title: { $regex: new RegExp(query, "i") } },
                         { description: { $regex: new RegExp(query, "i") } },
@@ -37,64 +37,70 @@ const getAllVideos = asyncHandler(async (req, res) => {
         // Execute the aggregation pipeline
         const videos = await Video.aggregate(pipeline);
 
-        res.status(200).json({
-            success: true,
-            count: videos.length,
-            data: videos,
-        });
+        return res.status(200).json(new ApiResponse(200, videos, "Video's found"))
+
     } catch (err) {
-        res.status(500).json({
-            success: false,
-            error: "An error occurred while retrieving videos",
-        });
+        throw new ApiError(500, "Error while getting videos")
     }
 });
 
 const publishAVideo = asyncHandler(async (req, res) => {
-    const { title, description } = req.body
-    const { userId } = req.user
+    try {
+        const { title, description } = req.body
+        const { userId } = req.user
 
-    if (!title || !description)
-        throw new ApiError(400, "All fields are required")
+        if (!title || !description)
+            throw new ApiError(400, "All fields are required")
 
-    const videoFileLocalPath  = req.files?.videoFile[0]?.path
-    const thumbnailLocalPath = req.files?.thumbnail[0]?.path
-    if (!videoFileLocalPath || !thumbnailLocalPath)
-        throw new ApiError(400, "Video and Thumbnail are required")
+        const videoFileLocalPath = req.files?.videoFile[0]?.path
+        const thumbnailLocalPath = req.files?.thumbnail[0]?.path
+        if (!videoFileLocalPath || !thumbnailLocalPath)
+            throw new ApiError(400, "Video and Thumbnail are required")
 
-    
-    const videoFile = await uploadOnCloudinary(videoFileLocalPath)
-    const thumbnail = await uploadOnCloudinary(thumbnailLocalPath)
 
-    console.log(videoFile, thumbnail)
-    if(!videoFile.url || !thumbnail.url)
-        throw new ApiError(400, "Video and Thumbnail not uploaded")
+        const videoFile = await uploadOnCloudinary(videoFileLocalPath)
+        const thumbnail = await uploadOnCloudinary(thumbnailLocalPath)
 
-    const videoDuration = videoFile.duration
+        console.log(videoFile, thumbnail)
+        if (!videoFile.url || !thumbnail.url)
+            throw new ApiError(400, "Video and Thumbnail not uploaded")
 
-    if(!videoDuration)
-        throw new ApiError(400, "Video duration not found")
+        const videoDuration = videoFile.duration
 
-    const video = await Video.create({
-        videoFile: videoFile.url,
-        thumbnail: thumbnail.url,
-        title,
-        description,
-        duration: videoDuration,
-        owner: userId
-    })
+        if (!videoDuration)
+            throw new ApiError(400, "Video duration not found")
 
-    res.status(201).json({
-        success: true,
-        data: video,
-    })
+        const video = await Video.create({
+            videoFile: videoFile.url,
+            thumbnail: thumbnail.url,
+            title,
+            description,
+            duration: videoDuration,
+            owner: userId
+        })
+
+        return res.status(200).json(new ApiResponse(200, video, "Video created found"))
+    } catch (error) {
+        throw new ApiError(500, "Error while publishing video")
+    }
+
 
 })
 
 const getVideoById = asyncHandler(async (req, res) => {
-    const { videoId } = req.params
-    //TODO: get video by id
+    try {
+        const { videoId } = req.params
+        const video = await Video.findById(videoId)
+
+        if (!video)
+            throw new ApiError(404, "Video not found")
+
+        return res.status(200).json(new ApiResponse(200, video, "Video found"))
+    } catch (error) {
+        throw new ApiError(500, "Error while getting video by id")
+    }
 })
+
 
 const updateVideo = asyncHandler(async (req, res) => {
     const { videoId } = req.params
