@@ -57,8 +57,8 @@ const publishAVideo = asyncHandler(async (req, res) => {
     if (!title || !description)
         throw new ApiError(400, "All fields are required")
 
-    const videoFileLocalPath  = req.files?.videoFile[0]
-    const thumbnailLocalPath = req.files?.thumbnail[0]
+    const videoFileLocalPath  = req.files?.videoFile[0]?.path
+    const thumbnailLocalPath = req.files?.thumbnail[0]?.path
     if (!videoFileLocalPath || !thumbnailLocalPath)
         throw new ApiError(400, "Video and Thumbnail are required")
 
@@ -66,6 +66,7 @@ const publishAVideo = asyncHandler(async (req, res) => {
     const videoFile = await uploadOnCloudinary(videoFileLocalPath)
     const thumbnail = await uploadOnCloudinary(thumbnailLocalPath)
 
+    console.log(videoFile, thumbnail)
     if(!videoFile.url || !thumbnail.url)
         throw new ApiError(400, "Video and Thumbnail not uploaded")
 
