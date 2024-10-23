@@ -7,11 +7,47 @@ import { ApiResponse } from "../utils/ApiResponse.js"
 import { asyncHandler } from "../utils/asyncHandler.js"
 
 const getChannelStats = asyncHandler(async (req, res) => {
-    // TODO: Get the channel stats like total video views, total subscribers, total videos, total likes etc.
+    try {
+        // TODO: Get the channel stats like total video views, total subscribers, total videos, total likes etc.
+        const { userId } = req.body
+        if (!isValidObjectId(userId)) throw new ApiError(400, "Invalid userId")
+        const videoViews = await Video.aggregate([
+            {
+                $group: {
+                    _id: null,
+                    totalViews: {
+                        $sum: "$views"
+                    }
+                }
+            }
+        ])
+
+        const totalVideos = await Video.countDocuments()
+
+        const totalSubscribers = await Subscription.countDocuments({ user: userId })
+
+        const totalLikes = await Like.countDocuments({ likedBy: userId })
+        if (!videoViews && !totalVideos && !totalSubscribers && !totalLikes) throw new ApiError(404, "No views,videos,sub and likes found")
+
+
+        return res.status(200).json(new ApiResponse(200, { videoViews, totalVideos, totalSubscribers, totalLikes }, "Channel stats"))
+    } catch (error) {
+        throw new ApiError(500, "Error while getting channel stats")
+    }
 })
 
 const getChannelVideos = asyncHandler(async (req, res) => {
-    // TODO: Get all the videos uploaded by the channel
+    try {
+
+        const { userId } = req.body
+        if (!isValidObjectId(userId)) throw new ApiError(400, "Invalid userId")
+        const getAllVideos = await Video.find({ user: userId })
+        if (!getAllVideos) throw new ApiError(404, "No videos found")
+        return res.status(200).json(new ApiResponse(200, getAllVideos, "All videos"))
+        // TODO: Get all the videos uploaded by the channel
+    } catch (error) {
+        throw new ApiError(500, "Error while getting channel videos")
+    }
 })
 
 export {
