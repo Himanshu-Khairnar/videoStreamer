@@ -8,7 +8,7 @@ interface Video {
 }
 export const getVideos = async () => {
     try {
-        const response = await fetch('https://localhost:8000/api/v1/videos/', {
+        const response = await fetch('http://localhost:8000/api/v1/videos/', {
             method: 'GET'
         })
         console.log(response)
@@ -19,7 +19,7 @@ export const getVideos = async () => {
 }
 export const publishVideo = async ({ title, description, videoFile, thumbnail }: Video) => {
     try {
-        const response = await fetch('https://localhost:8000/api/v1/videos/', {
+        const response = await fetch('http://localhost:8000/api/v1/videos/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -35,7 +35,7 @@ export const publishVideo = async ({ title, description, videoFile, thumbnail }:
 }
 export const GetVideoByID = async (id: string) => {
     try {
-        const response = await fetch(`https://localhost:8000/api/v1/videos/${id}`, {
+        const response = await fetch(`http://localhost:8000/api/v1/videos/${id}`, {
             method: 'GET'
         })
         console.log(response)
@@ -46,7 +46,7 @@ export const GetVideoByID = async (id: string) => {
 }
 export const DeleteVideoByID = async (id: string) => {
     try {
-        const response = await fetch(`https://localhost:8000/api/v1/videos/${id}`, {
+        const response = await fetch(`http://localhost:8000/api/v1/videos/${id}`, {
             method: 'DELETE'
         })
         console.log(response)
@@ -57,7 +57,7 @@ export const DeleteVideoByID = async (id: string) => {
 }
 export const UpdateVideo = async ({ id, title, description, thumbnail }: Video) => {
     try {
-        const respnse = await fetch(`https://localhost:8000/api/v1/videos/${id}`, {
+        const respnse = await fetch(`http://localhost:8000/api/v1/videos/${id}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'
@@ -73,7 +73,7 @@ export const UpdateVideo = async ({ id, title, description, thumbnail }: Video) 
 
 export const DeleteVideo = async ({ id}: Video) => {
     try {
-        const respnse = await fetch(`https://localhost:8000/api/v1/videos/${id}`, {
+        const respnse = await fetch(`http://localhost:8000/api/v1/videos/${id}`, {
             method: 'DELETE '
         })
         console.log(respnse)
@@ -84,7 +84,7 @@ export const DeleteVideo = async ({ id}: Video) => {
 }
 export const TogglePulish = async ({ id }: Video) => {
     try {
-        const respnse = await fetch(`https://localhost:8000/api/v1/videos/toggle/publish/${id}`, {
+        const respnse = await fetch(`http://localhost:8000/api/v1/videos/toggle/publish/${id}`, {
             method: 'PATCH'
         })
         console.log(respnse)

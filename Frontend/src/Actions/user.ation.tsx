@@ -10,7 +10,7 @@ interface User {
 
 export const Sigin = async ({ email, userName, password }: User) => {
     try {
-        const response = await fetch('https://localhost:8000/api/v1/users/login', {
+        const response = await fetch('http://localhost:8000/api/v1/users/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -26,7 +26,7 @@ export const Sigin = async ({ email, userName, password }: User) => {
 }
 export const SignUp = async ({ fullName, email, userName, password, avatar, coverImage }: User) => {
     try {
-        const response = await fetch('https://localhost:8000/api/v1/users', {
+        const response = await fetch('http://localhost:8000/api/v1/users', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -43,7 +43,7 @@ export const SignUp = async ({ fullName, email, userName, password, avatar, cove
 
 export const LogOut = async () => {
     try {
-        const response = await fetch('https://localhost:8000/api/v1/users/logout', {
+        const response = await fetch('http://localhost:8000/api/v1/users/logout', {
             method: 'POST'
         })
         console.log(response)
@@ -55,7 +55,7 @@ export const LogOut = async () => {
 
 export const RefreshToken = async () => {
     try {
-        const response = await fetch('https://localhost:8000/api/v1/users/refresh-token', {
+        const response = await fetch('http://localhost:8000/api/v1/users/refresh-token', {
             method: 'POST'
         })
         console.log(response)
@@ -67,7 +67,7 @@ export const RefreshToken = async () => {
 
 export const ChangePassword = async ({ currentPassword, newPassword }: { currentPassword: string, newPassword: string }) => {
     try {
-        const response = await fetch('https://localhost:8000/api/v1/users/change-password', {
+        const response = await fetch('http://localhost:8000/api/v1/users/change-password', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -83,7 +83,7 @@ export const ChangePassword = async ({ currentPassword, newPassword }: { current
 
 export const GetUser = async () => {
     try {
-        const response = await fetch('https://localhost:8000/api/v1/users/current-user', {
+        const response = await fetch('http://localhost:8000/api/v1/users/current-user', {
             method: 'POST'
         })
         console.log(response)
@@ -95,7 +95,7 @@ export const GetUser = async () => {
 
 export const UpdateAccountDetails = async ({ email, userName, }: User) => {
     try {
-        const response = await fetch('https://localhost:8000/api/v1/users/update-account', {
+        const response = await fetch('http://localhost:8000/api/v1/users/update-account', {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'
@@ -111,7 +111,7 @@ export const UpdateAccountDetails = async ({ email, userName, }: User) => {
 
 export const UpdateAvatar = async (avatar: string) => {
     try {
-        const response = await fetch('https://localhost:8000/api/v1/users/avatar', {
+        const response = await fetch('http://localhost:8000/api/v1/users/avatar', {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'
@@ -127,7 +127,7 @@ export const UpdateAvatar = async (avatar: string) => {
 
 export const UpdateCoverImage = async (coverImage: string) => {
     try {
-        const response = await fetch('https://localhost:8000/api/v1/users/coverImage', {
+        const response = await fetch('http://localhost:8000/api/v1/users/coverImage', {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'
@@ -143,7 +143,7 @@ export const UpdateCoverImage = async (coverImage: string) => {
 
 export const GetChannelProfile = async (userName: string) => {
     try {
-        const response = await fetch(`https://localhost:8000/api/v1/users/c/${userName}`, {
+        const response = await fetch(`http://localhost:8000/api/v1/users/c/${userName}`, {
             method: 'GET'
         })
         console.log(response)
@@ -155,7 +155,7 @@ export const GetChannelProfile = async (userName: string) => {
 
 export const WatchHistory = async () =>{
     try {
-        const response = await fetch('https://localhost:8000/api/v1/users/history', {
+        const response = await fetch('http://localhost:8000/api/v1/users/history', {
             method: 'GET'
         })
         console.log(response)

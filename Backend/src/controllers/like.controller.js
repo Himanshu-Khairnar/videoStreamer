@@ -7,7 +7,7 @@ import { asyncHandler } from "../utils/asyncHandler.js"
 const toggleVideoLike = asyncHandler(async (req, res) => {
     try {
         const { videoId } = req.params
-        const { userId } = req.user.id
+        const { userId } = req.user?.id
         let like
         let toggleVideoLike
 
@@ -39,7 +39,7 @@ const toggleVideoLike = asyncHandler(async (req, res) => {
 const toggleCommentLike = asyncHandler(async (req, res) => {
     try {
         const { commentId } = req.params
-        const { } = req.user?.id
+        const { userId} = req.user?.id
         let toggleCommentLike
         let like
 
@@ -71,7 +71,7 @@ const toggleCommentLike = asyncHandler(async (req, res) => {
 const getLikedVideos = asyncHandler(async (req, res) => {
     try {
         const { userId } = req.user?.id
-        const videos = await Like.find({ likedBy: userId })
+        const videos = await Like.find({ likedBy: userId ,video:{$exists:true},comment:{$exists:false}})    
         return res.status(200).json(new ApiResponse(200, videos, "Videos found"))
     } catch (error) {
         throw new ApiError(500, "Error while getting liked videos")

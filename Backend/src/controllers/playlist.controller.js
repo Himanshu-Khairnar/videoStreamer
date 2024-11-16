@@ -27,7 +27,7 @@ const createPlaylist = asyncHandler(async (req, res) => {
     //TODO: create playlist
 })
 
-const getUserPlaylists = asyncHandler(async (req, res) => {
+const  getUserPlaylists = asyncHandler(async (req, res) => {
     try {
         const { userId } = req.params
         //TODO: get user playlists
@@ -43,7 +43,7 @@ const getUserPlaylists = asyncHandler(async (req, res) => {
 
 })
 
-const getPlaylistById = asyncHandler(async (req, res) => {
+const getPlaylistById = asyncHandler(async (req, res) => {  
     try {
         const { playlistId } = req.params
 

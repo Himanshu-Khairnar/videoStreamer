@@ -89,13 +89,13 @@ const updateComment = asyncHandler(async (req, res) => {
     try {
         const { comment } = req.body
         const { userId } = req.user?.id
-        const { videoId } = req.params
+        const { commentId } = req.params
 
 
-        if (!isValidObjectId(userId) || !isValidObjectId(videoId))
-            throw new ApiError(400, "Invalid userId or videoId");
+        if (!isValidObjectId(userId) || !isValidObjectId(commentId))
+            throw new ApiError(400, "Invalid userId or commentId");
 
-        const updateComment = await Comment.findOneAndUpdate({ userId, videoId }, { comment })
+        const updateComment = await Comment.findOneAndUpdate({ userId, commentId }, { comment })
         if (updateComment === null) throw new ApiError(404, "Comment not found")
         return res.status(200).json(new ApiResponse(200, updateComment, "Comment updated"))
     } catch (error) {
@@ -105,7 +105,7 @@ const updateComment = asyncHandler(async (req, res) => {
 
 })
 
-const deleteComment = asyncHandler(async (req, res) => {
+const deleteComment = asyncHandler(async (req, res) => {    
     try {
         const {  comment } = req.body
         const { videoId } = req.params
