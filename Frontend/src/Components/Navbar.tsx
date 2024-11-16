@@ -6,9 +6,10 @@ import Image from 'next/image';
 import { Input } from './ui/input';
 import { Search } from 'lucide-react';
 import { ListBulletIcon } from '@radix-ui/react-icons';
+import Link from 'next/link';
 
 const Navbar = () => {
-    const [toggle,settoggle]=useState(false)
+    const [toggle, settoggle] = useState(false)
     return (
         <div className='flex items-center justify-between p-4 border-b-2 border-white '>
             {/* Logo */}
@@ -29,11 +30,13 @@ const Navbar = () => {
             {/* Buttons Container */}
             <div className='flex items-center gap-4 min-w-[2rem]'>
                 {/* Login Button */}
-                <Button variant="ghost" className='hidden md:block text-base'>
-                    Log in &rarr;
-                </Button>
+                <Link href='/Auth/login'>
+                    <Button variant="ghost" className='hidden md:block text-base'>
+                        Log in &rarr;
+                    </Button>
+                </Link>
                 {/* List Bullet Icon Button */}
-                <Button variant='ghost' className='md:hidden ' onClick={() => settoggle( !toggle)}>
+                <Button variant='ghost' className='md:hidden ' onClick={() => settoggle(!toggle)}>
                     <ListBulletIcon className='h-6 w-6' />
                 </Button>
                 {toggle && (
