@@ -65,7 +65,8 @@ const getVideoComments = asyncHandler(async (req, res) => {
 
 const addComment = asyncHandler(async (req, res) => {
     try {
-        const { userId, comment } = req.body
+        const {  comment } = req.body
+        const { userId } = req.user?.id
         const { videoId } = req.params
         if (!isValidObjectId(userId) || !isValidObjectId(videoId))
             throw new ApiError(400, "Invalid userId or videoId");
@@ -86,7 +87,8 @@ const addComment = asyncHandler(async (req, res) => {
 
 const updateComment = asyncHandler(async (req, res) => {
     try {
-        const { userId, comment } = req.body
+        const { comment } = req.body
+        const { userId } = req.user?.id
         const { videoId } = req.params
 
 
@@ -105,8 +107,9 @@ const updateComment = asyncHandler(async (req, res) => {
 
 const deleteComment = asyncHandler(async (req, res) => {
     try {
-        const { userId, comment } = req.body
+        const {  comment } = req.body
         const { videoId } = req.params
+        const { userId } = req.user?.id
 
 
         if (!isValidObjectId(userId) || !isValidObjectId(videoId))

@@ -9,7 +9,7 @@ import { asyncHandler } from "../utils/asyncHandler.js"
 const toggleSubscription = asyncHandler(async (req, res) => {
     try {
         const { channelId } = req.params
-        const { userId } = req.body
+        const { userId } = req.user?.id
         let sub
 
         if (!isValidObjectId(channelId) || !isValidObjectId(userId))

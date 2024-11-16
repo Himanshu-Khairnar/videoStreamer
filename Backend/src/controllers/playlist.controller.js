@@ -7,7 +7,8 @@ import { asyncHandler } from "../utils/asyncHandler.js"
 
 const createPlaylist = asyncHandler(async (req, res) => {
     try {
-        const { name, description, userId } = req.body
+        const { name, description, } = req.body
+        const { userId } = req.user?.id
 
         if (!isValidObjectId(userId))
             throw new ApiError(400, "Invalid userId");

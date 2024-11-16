@@ -9,7 +9,7 @@ import { asyncHandler } from "../utils/asyncHandler.js"
 const getChannelStats = asyncHandler(async (req, res) => {
     try {
         // TODO: Get the channel stats like total video views, total subscribers, total videos, total likes etc.
-        const { userId } = req.body
+        const { userId } = req.user?.id
         if (!isValidObjectId(userId)) throw new ApiError(400, "Invalid userId")
         const videoViews = await Video.aggregate([
             {
@@ -39,7 +39,7 @@ const getChannelStats = asyncHandler(async (req, res) => {
 const getChannelVideos = asyncHandler(async (req, res) => {
     try {
 
-        const { userId } = req.body
+        const { userId } = req.user?.id
         if (!isValidObjectId(userId)) throw new ApiError(400, "Invalid userId")
         const getAllVideos = await Video.find({ user: userId })
         if (!getAllVideos) throw new ApiError(404, "No videos found")

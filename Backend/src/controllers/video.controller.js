@@ -1,4 +1,4 @@
-pimport mongoose, { isValidObjectId } from "mongoose"
+import mongoose, { isValidObjectId } from "mongoose"
 import { Video } from "../models/video.model.js"
 import { User } from "../models/user.model.js"
 import { ApiError } from "../utils/ApiErrors.js"
@@ -103,9 +103,27 @@ const getVideoById = asyncHandler(async (req, res) => {
 
 
 const updateVideo = asyncHandler(async (req, res) => {
-    const { videoId } = req.params
-    //TODO: update video details like title, description, thumbnail
+    try {
+        const { videoId } = req.params
+        const { title, description } = req.body
 
+        if (!title || !description)
+            throw new ApiError(404, "title || description not found")
+        const thumbnailLocalPath = req.files?.thumbnail[0]?.path
+
+        if (!thumbnailLocalPath)
+            throw new ApiError(404, "Thumbnail not found")
+
+        const thumbnail = await uploadOnCloudinary(thumbnailLocalPath)
+        const video = await Video.findByIdAndUpdate(videoId, { title, description, thumbnail }, { new: true })
+
+        if (!video)
+            throw new ApiError(404, "Video not found")
+        console.log(video)
+        return res.status(200).json(new ApiResponse(200, video, "Video updated"))
+    } catch (error) {
+        console.log(error)
+    }
 })
 
 const deleteVideo = asyncHandler(async (req, res) => {
@@ -118,17 +136,22 @@ const deleteVideo = asyncHandler(async (req, res) => {
     return res.status(200).json(new ApiResponse(200, deleteSingleVideo, "Video deleted"))
 })
 
-const togglePublishStatus = asyncHandler(async (req, res) => {as
-    const { videoId } = req.params
-
-    const video = await Video.findById(videoId)
-
-    if (!video)
-        throw new ApiError(404, "Video not found")
-
-    video.published = !video.published
-    const updatedVideo = await video.save({ValidityState: false})
-    return res.status(200).json(new ApiResponse(200, updatedVideo, "Video status updated"))
+const togglePublishStatus = asyncHandler(async (req, res) => {
+    try {
+        
+        const { videoId } = req.params
+    
+        const video = await Video.findById(videoId)
+    
+        if (!video)
+            throw new ApiError(404, "Video not found")
+    
+        video.published = !video.published
+        const updatedVideo = await video.save()
+        return res.status(200).json(new ApiResponse(200, updatedVideo, "Video status updated"))
+    } catch (error) {
+        throw new ApiError(500, "Error while updating video status")
+    }
 })
 
 export {
