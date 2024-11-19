@@ -1,32 +1,47 @@
+'use server'
 interface User {
 
     email: string,
-    userName: string,
+    userName?: string,
     password: string,
     fullName?: string,
-    avatar?: string,
-    coverImage?: string
+    avatar?: object,
+    coverImage?: object
 }
 
-export const Sigin = async ({ email, userName, password }: User) => {
+export const Sigin = async ({ email, password }: User) => {
     try {
+        // console.log(JSON.stringify({ e?mail, password })); // Log the request payload
+
         const response = await fetch('http://localhost:8000/api/v1/users/login', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ email, userName, password })
-        })
-        console.log(response)
-        return response
+            body: JSON.stringify({ email:email, password:password }),
+        });
+        console.log('Raw Response:', response);
+
+        if (!response.ok) {
+            // Handle errors from the server
+            const errorData = await response.json(); // Parse error message
+            console.error('Server Error:', errorData);
+            throw new Error(errorData.message || 'Login failed');
+        }
+
+        const data = await response.json(); // Parse successful response
+        console.log('Response Data:', data);
+        return data; // Return parsed data to the caller
+    } catch (error: any) {
+        console.error('Network/Other Error:', error.message || error);
+        throw error; // Re-throw for caller to handle
     }
-    catch (error) {
-        console.log(error)
-    }
-}
+};
+
 export const SignUp = async ({ fullName, email, userName, password, avatar, coverImage }: User) => {
+
     try {
-        const response = await fetch('http://localhost:8000/api/v1/users', {
+        const response = await fetch('http://localhost:8000/api/v1/users/register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -153,7 +168,7 @@ export const GetChannelProfile = async (userName: string) => {
     }
 }
 
-export const WatchHistory = async () =>{
+export const WatchHistory = async () => {
     try {
         const response = await fetch('http://localhost:8000/api/v1/users/history', {
             method: 'GET'

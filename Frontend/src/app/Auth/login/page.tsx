@@ -1,10 +1,9 @@
-"use client";
+'use client';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-
-import { Button } from "@/Components/ui/button";
+import { Button } from '@/Components/ui/button';
 import {
   Form,
   FormControl,
@@ -13,36 +12,34 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/Components/ui/form";
-import { Input } from "@/Components/ui/input";
-import Image from "next/image";
-import Link from "next/link";
+} from '@/Components/ui/form';
+import { Input } from '@/Components/ui/input';
+import Image from 'next/image';
+import Link from 'next/link';
+import { Sigin } from '@/Actions/user.ation';
 
 const formSchema = z.object({
-  username: z.string().min(4, {
-    message: "Username must be at least 4 characters.",
-  }),
-  email: z.string().email({
-    message: "Please enter a valid email address.",
-  }),
-  password: z.string().min(8, {
-    message: "Password must be at least 8 characters.",
-  }),
-  
+  email: z.string().email({ message: 'Please enter a valid email address.' }),
+  password: z.string().min(4, { message: 'Password must be at least 4 characters.' }),
 });
 
 export default function ProfileForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      username: "",
-      email: "",
-      password: "",
+      email: '',
+      password: '',
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      const { email, password } = values;
+      const res = await Sigin({ email, password });
+      console.log('Login successful:', res);
+    } catch (err: any) {
+      console.error('Login failed:', err.message || err);
+    }
   }
 
   return (
@@ -56,23 +53,6 @@ export default function ProfileForm() {
             onSubmit={form.handleSubmit(onSubmit)}
             className="space-y-6 w-full"
           >
-            <FormField
-              control={form.control}
-              name="username"
-              render={({ field }) => (
-                <FormItem className="">
-                  <FormLabel className="text-white">Username</FormLabel>
-                  <FormControl >
-                    <Input
-                      placeholder="Enter your username"
-                      {...field}
-                      className="bg-neutral-700 text-white "
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
             {/* Email Field */}
             <FormField
               control={form.control}
@@ -118,22 +98,24 @@ export default function ProfileForm() {
             >
               Submit
             </Button>
-
-            <div className="text-center mt-4">Don't have an account?  
-              <Link href="/Auth/register" className="text-indigo-600">  Register</Link>
+            <div className="text-center mt-4">
+              Don't have an account?{' '}
+              <Link href="/Auth/register" className="text-indigo-600">
+                Register
+              </Link>
             </div>
           </form>
         </Form>
       </div>
-
       {/* Image Section */}
-      <div className="w-full md:w-1/2 mt-6 md:display hidden md:flex md:justify-center md:items-center">
+      <div className="w-full md:w-1/2 mt-6 hidden md:flex justify-center items-center">
         <Image
           src="/Login.svg"
           height={300}
           width={300}
           alt="Login Illustration"
           className="max-w-full h-auto"
+          priority // Prevents potential hydration errors
         />
       </div>
     </div>
